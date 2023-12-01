@@ -156,6 +156,20 @@ public static class Utils
         }
         return new string(sb.ToString().Reverse().ToArray());
     }
+
+    public static void Log(string message, bool toConsole = false, bool toFile = false)
+    {
+        if (toConsole) Console.WriteLine(message);
+        if (toFile) File.AppendAllLines(@"debug.log", new[] { message });
+    }
+
+    public static void Answer(string answer)
+    {
+        Console.BackgroundColor = ConsoleColor.DarkGreen;
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine(answer);
+        Console.ResetColor();
+    }
 }
 
 public static TEnum ToEnum<TEnum>(this string value) where TEnum : struct

@@ -1,9 +1,9 @@
 # Docs
 
 ```bash
-...
+  * ! /^\                                          
 ```
 
 - [Stats](STATS.md)
 
-<!-- ![Days](images/days.png "Days") -->
+![Days](images/day1.0.png "Days")
