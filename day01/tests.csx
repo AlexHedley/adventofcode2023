@@ -60,87 +60,6 @@ public class Day1Tests : IDisposable
 
     // Part 2
 
-    public void GetNumbersFromString2()
-    {
-        var input = "two1nine";
-        var numbersFromString = day1.GetNumbersFromString2(input);
-        
-        var expectedNumbers = new List<string>() { "two", "1", "nine" };
-        numbersFromString.Should().BeEquivalentTo(expectedNumbers, "");
-
-        //
-
-        input = "eightwothree";
-        numbersFromString = day1.GetNumbersFromString2(input);
-
-        expectedNumbers = new List<string>() { "eight", "three" };
-        numbersFromString.Should().BeEquivalentTo(expectedNumbers, "");
-
-        //
-
-        input = "abcone2threexyz";
-        numbersFromString = day1.GetNumbersFromString2(input);
-
-        expectedNumbers = new List<string>() { "one", "2", "three" };
-        numbersFromString.Should().BeEquivalentTo(expectedNumbers, "");
-
-        //
-
-        input = "xtwone3four";
-        numbersFromString = day1.GetNumbersFromString2(input);
-
-        expectedNumbers = new List<string>() { "two", "3", "four" };
-        numbersFromString.Should().BeEquivalentTo(expectedNumbers, "");
-
-        //
-
-        input = "4nineeightseven2";
-        numbersFromString = day1.GetNumbersFromString2(input);
-
-        expectedNumbers = new List<string>() { "4", "nine", "eight", "seven", "2" };
-        numbersFromString.Should().BeEquivalentTo(expectedNumbers, "");
-
-        //
-
-        input = "zoneight234";
-        numbersFromString = day1.GetNumbersFromString2(input);
-
-        expectedNumbers = new List<string>() { "one", "2", "3", "4" };
-        numbersFromString.Should().BeEquivalentTo(expectedNumbers, "");
-
-        //
-
-        input = "7pqrstsixteen";
-        numbersFromString = day1.GetNumbersFromString2(input);
-
-        expectedNumbers = new List<string>() { "7", "six" };
-        numbersFromString.Should().BeEquivalentTo(expectedNumbers, "");
-
-        //
-
-        input = "twotwo98three71four";
-        numbersFromString = day1.GetNumbersFromString2(input);
-
-        expectedNumbers = new List<string>() { "two", "two", "9", "8", "three", "7", "1", "four" };
-        numbersFromString.Should().BeEquivalentTo(expectedNumbers, "");
-    }
-
-    // [ArgumentsSource(nameof(TestData))]
-    // public void GetNumbersFromString2(string input, List<int> expected)
-    // {
-    //     var numbersFromString = day1.GetNumbersFromString2(input);
-    //     numbersFromString.Should().BeEquivalentTo(expected, "");
-    // }
-
-    // public IEnumerable<object[]> TestData
-    // {
-    //     var items = new IEnumerable<object[]>();
-    //     var item1 = new object[] { "two1nine", new List<int>() { "two", "1", "nine" } };
-    //     items.Add(item1);
-
-    //     return items;  
-    // }
-
     public void StringsToNumbers()
     {
         var input = new List<string>() { "two", "1", "nine" };
@@ -148,5 +67,28 @@ public class Day1Tests : IDisposable
 
         var numbers = day1.StringsToNumbers(input);
         numbers.Should().BeEquivalentTo(expectedNumbers, "");
+    }
+
+    [Arguments("1abc2", "oneabctwo")]
+    public void NumbersToStrings(string input, string expected)
+    {
+        var output = day1.NumbersToStrings(input);
+        output.Should().Be(expected);
+    }
+
+    [Arguments("oneabctwo", "one")]
+    public void FindFirstNumber(string input, string expected)
+    {
+        string pattern = @"one|two|three|four|five|six|seven|eight|nine";
+        var output = day1.FindFirstNumber(input, pattern);
+        output.Should().Be(expected);
+    }
+
+    [Arguments("oneabctwo", "two")]
+    public void FindLastNumber(string input, string expected)
+    {
+        string pattern = @"one|two|three|four|five|six|seven|eight|nine";
+        var output = day1.FindLastNumber(input, pattern);
+        output.Should().Be(expected);
     }
 }

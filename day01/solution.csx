@@ -64,110 +64,85 @@ public class Day1
     }
 
     string[] numbersAsWords = new string[] { "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+    string pattern = @"one|two|three|four|five|six|seven|eight|nine";
     
     public void Part2(string[] lines)
     {
         var total = 0;
-
+        
+        var numbersAsStrings = new List<string>();
         foreach(var line in lines)
         {
-            var initialNumbers = GetNumbersFromString2(line);
-            
-            initialNumbers.ForEach(n => Utils.Log(n, logToConsole, logToFile));
-            Utils.Log("--- ---", logToConsole, logToFile);
+            Utils.Log($"{line}", logToConsole, logToFile);
+            var input = NumbersToStrings(line);
+            Utils.Log($"{input}", logToConsole, logToFile);
 
-            var numbers = StringsToNumbers(initialNumbers);
-            numbers.ForEach(n => Utils.Log(n, logToConsole, logToFile));
+            var first = FindFirstNumber(input, pattern);
+            var last = FindLastNumber(input, pattern);
 
-            var sum = JoinFirstAndLast(numbers);
-            Utils.Log($"sum:'{sum}'", logToConsole, logToFile);
-            Utils.Log($"", logToConsole, logToFile);
+            Utils.Log($"{first}{last}", logToConsole, logToFile);
+            var firstNumber = ToLong(first);
+            var lastNumber = ToLong(last);
+            Utils.Log($"{firstNumber}{lastNumber}", logToConsole, logToFile);
+            numbersAsStrings.Add($"{firstNumber}{lastNumber}");
+        }
 
-            total += sum;
+        foreach(var numberAsString in numbersAsStrings)
+        {
+            var number = int.Parse(numberAsString);
+            total += number;
         }
 
         Utils.Log($"{total}", logToConsole, logToFile);
         Utils.Answer($"{total}");
     }
 
-    public List<string> GetNumbersFromString2(string input)
+    public string FindFirstNumber(string input, string pattern)
     {
-        Utils.Log($"{input}", logToConsole, logToFile);
+        var first = "";
+        Regex firstRegex = new Regex(pattern, RegexOptions.IgnoreCase);
+        Match firstMatch = firstRegex.Match(input);
+        while (firstMatch.Success)
+        {
+            Utils.Log($"{firstMatch.Value}", logToConsole, logToFile);
+            first = firstMatch.Value;
+            break;
+        }
 
-        var i = -1;
-        var skipTo = 0;
+        return first;
+    }
 
-        var numbers = new List<string>();
-        
+    public string FindLastNumber(string input, string pattern)
+    {
+        var last = "";
+        Regex lastRegex = new Regex(pattern, RegexOptions.RightToLeft);
+        Match lastMatch = lastRegex.Match(input);
+        while (lastMatch.Success)
+        {
+            Utils.Log($"{lastMatch.Value}", logToConsole, logToFile);
+            last = lastMatch.Value;
+            break;
+        }
+
+        return last;
+    }
+
+    public string NumbersToStrings(string input)
+    {
         foreach (char c in input)
         {
-            i++;
-            Utils.Log($"c:{c} | i:{i} | skipTo:{skipTo}", logToConsole, logToFile);
-
-            if (i != skipTo) continue;            
-            
             if (Char.IsDigit(c))
             {
-                Utils.Log("Digit Found", logToConsole, logToFile);
-                numbers.Add(Char.ToString(c));
-                skipTo = skipTo+1;
-            }
-            else
-            {
-                Utils.Log($"Checking letter: '{c}'", logToConsole, logToFile);
-                
-                var matches = numbersAsWords.Where(number => number[0] == c);
-                
-                Utils.Log($"input:'{input}' {skipTo} {input.Length - 1}", logToConsole, logToFile);
-                var remainingInput = input.Substring(skipTo);
-
-                if (matches.Any())
-                {
-                    var matched = false;
-                    foreach (var match in matches)
-                    {
-                        if (matched) continue;
-
-                        Utils.Log($"Checking match:'{match}' against remainingInput:'{remainingInput}' (input:'{input}')", logToConsole, logToFile);
-                        
-                        if (remainingInput.Contains(match))
-                        {
-                            Utils.Log($"'{remainingInput}' Matches '{match}' ('{input}')", logToConsole, logToFile);
-
-                            var length = 0;
-                            foreach(var number in numbers)
-                            {
-                                length += number.Length;
-                            }
-
-                            Utils.Log($"i:'{i}' | match.Length:'{match.Length}'", logToConsole, logToFile);
-                            var index = i + match.Length;
-                            Utils.Log($"Index: {index}", logToConsole, logToFile);
-
-                            numbers.Add(match);
-                            skipTo = index;
-
-                            Utils.Log($"i:{i} | skipTo:{skipTo}", logToConsole, logToFile);
-                            matched = true;
-                            continue;
-                        }
-                        else 
-                        {
-                            Utils.Log($"input doesn't contain match", logToConsole, logToFile);
-                            // continue;
-                        }
-                    }
-                    if (!matched) skipTo = skipTo+1;
-                }
-                else
-                {
-                    Utils.Log($"No matches for {c}", logToConsole, logToFile);
-                    skipTo = skipTo+1;
-                }
+                var name = numberTable.FirstOrDefault(n => n.Value == c - '0').Key;
+                var index = input.IndexOf(c);
+                StringBuilder sb = new StringBuilder(input);
+                sb.Remove(index, 1);
+                sb.Insert(index, name);
+                input = sb.ToString();
             }
         }
 
-        return numbers;
+        return input;
     }
 
     public List<string> StringsToNumbers(List<string> strings)
@@ -192,7 +167,7 @@ public class Day1
     }
 
     // https://stackoverflow.com/a/11278412
-    private static Dictionary<string,long> numberTable=
+    private static Dictionary<string,long> numberTable =
         new Dictionary<string,long>
             { {"zero",0},{"one",1},{"two",2},{"three",3},{"four",4},
             {"five",5},{"six",6},{"seven",7},{"eight",8},{"nine",9},
