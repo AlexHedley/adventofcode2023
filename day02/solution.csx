@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 public class Day2
 {
     bool logToConsole = false;
-    bool logToFile = false;
+    bool logToFile = true;
 
     public class Game
     {
@@ -64,7 +64,7 @@ public class Day2
     public void Part1(string[] lines)
     {
         var sum = 0L;
-        foreach(var line in lines)
+        foreach (var line in lines)
         {
             var game = GetGame(line);
             // Utils.Log(game, logToConsole, logToFile);
@@ -139,6 +139,46 @@ public class Day2
         }
         return valid;
     }
+
+    public void Part2(string[] lines)
+    {
+        var sum = 0L;
+
+        foreach(var line in lines)
+        {
+            var game = GetGame(line);
+            // Utils.Log(game, logToConsole, logToFile);
+            // Console.WriteLine(game);
+
+            var maxColours = CheckMaxColours(game);
+            // Utils.Log($"{maxColours}", logToConsole, logToFile);
+            // Utils.Info();
+
+            var gameTotal = TotalOfOptions(maxColours);
+            // Utils.Log($"{gameTotal}", logToConsole, logToFile);
+            // Utils.Info($"{gameTotal}");
+
+            sum += gameTotal;
+        }
+
+        Utils.Log($"{sum}", logToConsole, logToFile);
+        Utils.Answer($"{sum}");
+    }
+
+    public Options CheckMaxColours(Game game)
+    {
+        var maxRed = game.Options.Max(o => o.Red); // 🔴
+        var maxBlue = game.Options.Max(o => o.Blue); // 🔵
+        var maxGreen = game.Options.Max(o => o.Green); // 🟢
+
+        return new Options() { Red = maxRed, Blue = maxBlue, Green = maxGreen };
+    }
+
+    public long TotalOfOptions(Options options)
+    {
+        return options.Red * options.Blue * options.Green;
+    }
+
 }
 
 Utils.Log("-- Day 2 --", true, true);
@@ -152,12 +192,12 @@ string fileName = @"input.txt";
 var lines = Utils.GetLines(fileName);
 
 // Part 1
-Utils.Log("Part 1", true, true);
-day2.Part1(lines);
+// Utils.Log("Part 1", true, true);
+// day2.Part1(lines);
 
 // Part 2
-// Utils.Log("Part 2", true, true);
-// day2.Part2(lines);
+Utils.Log("Part 2", true, true);
+day2.Part2(lines);
 
 Console.WriteLine("Press any key to exit.");
 System.Console.ReadKey();

@@ -170,6 +170,14 @@ public static class Utils
         Console.WriteLine(answer);
         Console.ResetColor();
     }
+
+    public static void Info(string message)
+    {
+        Console.BackgroundColor = ConsoleColor.DarkBlue;
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine(message);
+        Console.ResetColor();
+    }
 }
 
 public static TEnum ToEnum<TEnum>(this string value) where TEnum : struct
