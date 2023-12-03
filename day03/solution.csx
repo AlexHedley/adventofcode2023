@@ -340,7 +340,7 @@ public class Day3
                     
                     foreach (var adjecentPosition in adjecentPositions)
                     {
-                        Console.WriteLine($"{adjecentPosition.Item1}, {adjecentPosition.Item2}");
+                        Utils.Log($"{adjecentPosition.Item1}, {adjecentPosition.Item2}", logToConsole, logToFile);
                         
                         var row = Utils.GetRow(matrix, adjecentPosition.Item1);
                         var line = string.Join("", row);
@@ -358,7 +358,7 @@ public class Day3
                             Utils.Log($"{number}", logToConsole, logToFile);
                             total *= number;
                         }
-                        Utils.Info($"{total}");
+                        // Utils.Info($"{total}");
 
                         gearsTotal.Add(total);
                     }
