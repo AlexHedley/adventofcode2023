@@ -9,10 +9,10 @@ public class Day3
 
     public void Part1(string[] lines)
     {
-        var ROWS = lines.Length;
-        var COLS = lines[0].Length;
+        var rows = lines.Length;
+        var cols = lines[0].Length;
 
-        var matrix = Utils.GenerateMatrix<string>(lines, ROWS, COLS);
+        var matrix = Utils.GenerateMatrix<string>(lines, rows, cols);
         Utils.PrintMatrix(matrix);
 
         // Find all numbers and sum
@@ -114,64 +114,7 @@ public class Day3
                 // Don't need to check "symbols"
                 // if (!Char.IsLetterOrDigit(currentValue.ToCharArray()[0])) continue;
 
-                var adjecents = new List<string>();
-                var top = "";
-                var left = "";
-                var bottom = "";
-                var right = "";
-
-                // U D L R
-                if (i-1 > -1)
-                {
-                    top = matrix[i-1, j];
-                    adjecents.Add(top);
-                }
-                if (j-1 > -1)
-                {
-                    left = matrix[i, j-1];
-                    adjecents.Add(left);
-                }
-                if (i+1 < rowLength)
-                {
-                    bottom = matrix[i+1, j];
-                    adjecents.Add(bottom); 
-                }
-                if (j+1 < colLength)
-                {
-                    right = matrix[i, j+1];
-                    adjecents.Add(right);
-                }
-
-                Utils.Log($"T:{top} | L:{left} | B:{bottom} | R:{right}", logToConsole, logToFile);
-
-                var topLeft = "";
-                var topRight = "";
-                var bottomLeft = "";
-                var bottomRight = "";
-
-                // Diagonals
-                if (i-1 > -1 && j-1 > -1)
-                {
-                    topLeft = matrix[i-1, j-1];
-                    adjecents.Add(topLeft);
-                }
-                if (i+1 < rowLength && j-1 > -1)
-                {
-                    topRight = matrix[i+1, j-1];
-                    adjecents.Add(topRight);
-                }
-                if (i-1 > -1 && j+1 < colLength)
-                {
-                    bottomLeft = matrix[i-1, j+1];
-                    adjecents.Add(bottomLeft); 
-                }
-                if (i+1 < rowLength && j+1 < colLength)
-                {
-                    bottomRight = matrix[i+1, j+1];
-                    adjecents.Add(bottomRight);
-                }
-
-                Utils.Log($"TR:{topRight} | TL:{topLeft} | BR:{bottomLeft} | RL:{bottomRight}", logToConsole, logToFile);
+                var adjecents = GetAdjacents(matrix, i, j);
                 
                 if (!adjecents.Where(a => IsSymbol(a.ToCharArray()[0])).Any())
                 {
@@ -221,6 +164,73 @@ public class Day3
         }
 
         return validNumbers;
+    }
+
+    public List<string> GetAdjacents(string[,] matrix, int i, int j)
+    {
+        int rowLength = matrix.GetLength(0);
+        int colLength = matrix.GetLength(1);
+
+        var adjecents = new List<string>();
+        var top = "";
+        var left = "";
+        var bottom = "";
+        var right = "";
+
+        // U D L R
+        if (i-1 > -1)
+        {
+            top = matrix[i-1, j];
+            adjecents.Add(top);
+        }
+        if (j-1 > -1)
+        {
+            left = matrix[i, j-1];
+            adjecents.Add(left);
+        }
+        if (i+1 < rowLength)
+        {
+            bottom = matrix[i+1, j];
+            adjecents.Add(bottom); 
+        }
+        if (j+1 < colLength)
+        {
+            right = matrix[i, j+1];
+            adjecents.Add(right);
+        }
+
+        Utils.Log($"T:{top} | L:{left} | B:{bottom} | R:{right}", logToConsole, logToFile);
+
+        var topLeft = "";
+        var topRight = "";
+        var bottomLeft = "";
+        var bottomRight = "";
+
+        // Diagonals
+        if (i-1 > -1 && j-1 > -1)
+        {
+            topLeft = matrix[i-1, j-1];
+            adjecents.Add(topLeft);
+        }
+        if (i+1 < rowLength && j-1 > -1)
+        {
+            bottomLeft = matrix[i+1, j-1];
+            adjecents.Add(bottomLeft);
+        }
+        if (i-1 > -1 && j+1 < colLength)
+        {
+            topRight = matrix[i-1, j+1];
+            adjecents.Add(topRight); 
+        }
+        if (i+1 < rowLength && j+1 < colLength)
+        {
+            bottomRight = matrix[i+1, j+1];
+            adjecents.Add(bottomRight);
+        }
+
+        Utils.Log($"TR:{topRight} | TL:{topLeft} | BR:{bottomRight} | BL:{bottomLeft}", logToConsole, logToFile);
+
+        return adjecents;
     }
 
     // void CheckForDuplicates(string line, int lineNumber)
@@ -292,9 +302,155 @@ public class Day3
         return long.Parse(sb.ToString());
     }
 
-    // public void Part2(string[] lines)
-    // {
-    // }
+    public void Part2(string[] lines)
+    {
+        var rows = lines.Length;
+        var cols = lines[0].Length;
+
+        var matrix = Utils.GenerateMatrix<string>(lines, rows, cols);
+        Utils.PrintMatrix(matrix);
+
+        var totals = CheckGears(matrix);
+        var sum = totals.Sum();
+        
+        Utils.Log($"{sum}", logToConsole, logToFile);
+        Utils.Answer($"{sum}");
+    }
+
+    public List<long> CheckGears(string[,] matrix)
+    {
+        var gearsTotal = new List<long>();
+
+        int rowLength = matrix.GetLength(0);
+        int colLength = matrix.GetLength(1);
+
+        for (int i = 0; i < rowLength; i++)
+        {
+            for (int j = 0; j < colLength; j++)
+            {
+                var currentValue = matrix[i, j];
+                Utils.Log($"{currentValue} | {i}:{j}", logToConsole, logToFile);
+
+                if (currentValue == "*")
+                {
+                    var total = 1L;
+                    var numbers = new HashSet<long>();
+                    // var adjecents = GetAdjacents(matrix, i, j);
+                    var adjecentPositions = GetAdjacentPositions(matrix, i, j);
+                    
+                    foreach (var adjecentPosition in adjecentPositions)
+                    {
+                        Console.WriteLine($"{adjecentPosition.Item1}, {adjecentPosition.Item2}");
+                        
+                        var row = Utils.GetRow(matrix, adjecentPosition.Item1);
+                        var line = string.Join("", row);
+                        Utils.Log($"{i}: {line}", logToConsole, logToFile);
+                        var number = FindNumber(line, adjecentPosition.Item2);
+                        numbers.Add(number);
+                    }
+
+                    Utils.Log($"# {numbers.Count()}", logToConsole, logToFile);
+
+                    if (numbers.Count() > 1)
+                    {
+                        foreach(var number in numbers)
+                        {
+                            Utils.Log($"{number}", logToConsole, logToFile);
+                            total *= number;
+                        }
+                        Utils.Info($"{total}");
+
+                        gearsTotal.Add(total);
+                    }
+                }
+            }
+        }
+
+        return gearsTotal;
+    }
+
+    public List<(int, int)> GetAdjacentPositions(string[,] matrix, int i, int j)
+    {
+        int rowLength = matrix.GetLength(0);
+        int colLength = matrix.GetLength(1);
+
+        var adjecents = new List<(int, int)>();
+        var top = "";
+        var left = "";
+        var bottom = "";
+        var right = "";
+
+        // U D L R
+        if (i-1 > -1)
+        {
+            top = matrix[i-1, j];
+            var isNumeric = long.TryParse(top, out _);
+            if (isNumeric)
+                adjecents.Add((i-1, j));
+        }
+        if (j-1 > -1)
+        {
+            left = matrix[i, j-1];
+            var isNumeric = long.TryParse(left, out _);
+            if (isNumeric)
+                adjecents.Add((i, j-1));
+        }
+        if (i+1 < rowLength)
+        {
+            bottom = matrix[i+1, j];
+            var isNumeric = long.TryParse(bottom, out _);
+            if (isNumeric)
+                adjecents.Add((i+1, j)); 
+        }
+        if (j+1 < colLength)
+        {
+            right = matrix[i, j+1];
+            var isNumeric = long.TryParse(right, out _);
+            if (isNumeric)
+                adjecents.Add((i, j+1));
+        }
+
+        Utils.Log($"T:{top} | L:{left} | B:{bottom} | R:{right}", logToConsole, logToFile);
+
+        var topLeft = "";
+        var topRight = "";
+        var bottomLeft = "";
+        var bottomRight = "";
+
+        // Diagonals
+        if (i-1 > -1 && j-1 > -1)
+        {
+            topLeft = matrix[i-1, j-1];
+            var isNumeric = long.TryParse(topLeft, out _);
+            if (isNumeric)
+                adjecents.Add((i-1, j-1));
+        }
+        if (i+1 < rowLength && j-1 > -1)
+        {
+            bottomLeft = matrix[i+1, j-1];
+            var isNumeric = long.TryParse(bottomLeft, out _);
+            if (isNumeric)
+                adjecents.Add((i+1, j-1));
+        }
+        if (i-1 > -1 && j+1 < colLength)
+        {
+            topRight = matrix[i-1, j+1];
+            var isNumeric = long.TryParse(topRight, out _);
+            if (isNumeric)
+                adjecents.Add((i-1, j+1)); 
+        }
+        if (i+1 < rowLength && j+1 < colLength)
+        {
+            bottomRight = matrix[i+1, j+1];
+            var isNumeric = long.TryParse(bottomRight, out _);
+            if (isNumeric)
+                adjecents.Add((i+1, j+1));
+        }
+
+        Utils.Log($"TR:{topRight} | TL:{topLeft} | BR:{bottomRight} | BL:{bottomLeft}", logToConsole, logToFile);
+
+        return adjecents;
+    }
 }
 
 Utils.Log("-- Day 3 --", true, true);
@@ -307,12 +463,12 @@ string fileName = @"input.txt";
 var lines = Utils.GetLines(fileName);
 
 // Part 1
-Utils.Log("Part 1", true, true);
-day3.Part1(lines);
+// Utils.Log("Part 1", true, true);
+// day3.Part1(lines);
 
 // Part 2
-// Utils.Log("Part 2", true, true);
-// day3.Part2(lines);
+Utils.Log("Part 2", true, true);
+day3.Part2(lines);
 
 Console.WriteLine("Press any key to exit.");
 System.Console.ReadKey();
