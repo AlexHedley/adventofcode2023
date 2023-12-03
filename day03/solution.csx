@@ -4,8 +4,8 @@ using System.Text.RegularExpressions;
 
 public class Day3
 {
-    bool logToConsole = true;
-    bool logToFile = true;
+    bool logToConsole = false;
+    bool logToFile = false;
 
     public void Part1(string[] lines)
     {
@@ -15,15 +15,17 @@ public class Day3
         var matrix = Utils.GenerateMatrix<string>(lines, ROWS, COLS);
         Utils.PrintMatrix(matrix);
 
-        CheckAdjecents(matrix);
-
         // Find all numbers and sum
-        // TODO: Remove where adjacent.
-        // var numbers = FindNumbersInLines(lines);
-        // var sum = numbers.Sum();
+        var numbers = FindNumbersInLines(lines);
+        var total = numbers.Sum();
+        Utils.Log($"Total: '{total}'", logToConsole, logToFile);
 
-        // Utils.Log($"{sum}", logToConsole, logToFile);
-        // Utils.Answer($"{sum}");
+        var validNumbers = CheckAdjecents(matrix);
+        // validNumbers.ForEach(Console.WriteLine);
+        var sum = validNumbers.Sum();
+        
+        Utils.Log($"{sum} ({total}) {total-sum}", logToConsole, logToFile);
+        Utils.Answer($"{sum}");
     }
 
     public List<long> FindNumbersInLines(string[] lines)
@@ -54,25 +56,33 @@ public class Day3
         return numbers;
     }
 
+    // public bool IsSymbol(char c)
+    // {
+    //     if (c == '.') return false;
+    //     if (c == '#') return true;
+    //     if (c == '%') return true;
+    //     if (c == '&') return true;
+    //     if (c == '@') return true;
+    //     if (c == '_') return true;
+    //     if (c == '-') return true;
+    //     if (c == '*') return true;
+    //     if (c == '/') return true;
+        
+    //     if (Char.IsSymbol(c)) return true;
+
+    //     return false;
+    // }
+
     public bool IsSymbol(char c)
     {
         if (c == '.') return false;
-        if (c == '#') return true;
-        if (c == '%') return true;
-        if (c == '&') return true;
-        if (c == '@') return true;
-        if (c == '_') return true;
-        if (c == '-') return true;
-        if (c == '*') return true;
-        if (c == '/') return true;
-        
-        if (Char.IsSymbol(c)) return true;
-
-        return false;
+        return !Char.IsLetterOrDigit(c);
     }
 
-    public void CheckAdjecents(string[,] matrix)
+    public List<long> CheckAdjecents(string[,] matrix)
     {
+        var validNumbers = new List<long>();
+
         int rowLength = matrix.GetLength(0);
         int colLength = matrix.GetLength(1);
 
@@ -82,14 +92,27 @@ public class Day3
             var row = Utils.GetRow(matrix, i);
             var line = string.Join("", row);
             Utils.Log($"{i}: {line}", logToConsole, logToFile);
-            var numbers = FindNumbersInLine(line);
+
+            // CheckForDuplicates(line, i);
+
+            var numbers = new List<long>();
+            var currentNumber = 0L;
+            var added = false;
 
             for (int j = 0; j < colLength; j++)
             {
                 var currentValue = matrix[i, j];
                 Utils.Log($"{currentValue} | {i}:{j}", logToConsole, logToFile);
+
                 // Don't need to check "."
-                if (currentValue == ".") continue;
+                if (currentValue == ".")
+                {
+                    currentNumber = 0; // Reset for Duplicates L: 124 (916)
+                    added = false;
+                    continue;
+                }
+                // Don't need to check "symbols"
+                // if (!Char.IsLetterOrDigit(currentValue.ToCharArray()[0])) continue;
 
                 var adjecents = new List<string>();
                 var top = "";
@@ -97,6 +120,7 @@ public class Day3
                 var bottom = "";
                 var right = "";
 
+                // U D L R
                 if (i-1 > -1)
                 {
                     top = matrix[i-1, j];
@@ -119,15 +143,153 @@ public class Day3
                 }
 
                 Utils.Log($"T:{top} | L:{left} | B:{bottom} | R:{right}", logToConsole, logToFile);
-                
-                if (adjecents.Where(a => IsSymbol(a.ToCharArray()[0])).Any())
+
+                var topLeft = "";
+                var topRight = "";
+                var bottomLeft = "";
+                var bottomRight = "";
+
+                // Diagonals
+                if (i-1 > -1 && j-1 > -1)
                 {
-                    Utils.Log("SYMBOL", logToConsole, logToFile);
+                    topLeft = matrix[i-1, j-1];
+                    adjecents.Add(topLeft);
+                }
+                if (i+1 < rowLength && j-1 > -1)
+                {
+                    topRight = matrix[i+1, j-1];
+                    adjecents.Add(topRight);
+                }
+                if (i-1 > -1 && j+1 < colLength)
+                {
+                    bottomLeft = matrix[i-1, j+1];
+                    adjecents.Add(bottomLeft); 
+                }
+                if (i+1 < rowLength && j+1 < colLength)
+                {
+                    bottomRight = matrix[i+1, j+1];
+                    adjecents.Add(bottomRight);
+                }
+
+                Utils.Log($"TR:{topRight} | TL:{topLeft} | BR:{bottomLeft} | RL:{bottomRight}", logToConsole, logToFile);
+                
+                if (!adjecents.Where(a => IsSymbol(a.ToCharArray()[0])).Any())
+                {
+                    Utils.Log("NO SYMBOL ADJ", logToConsole, logToFile);
                     // var currentString = line.Substring(j+1);
                     // Utils.Log($"{line} : {currentString}", logToConsole, logToFile);
+                    
+                    if (IsSymbol(currentValue.ToCharArray()[0]))
+                    {
+                        currentNumber = 0; // Reset for Duplicates L: 124 (916)
+                        added = false;
+                        continue;
+                    }
+                    
+                    Utils.Log($"NSA - {currentNumber} | {added}", logToConsole, logToFile);
+                    
+                    var number = FindNumber(line, j);
+                    if (currentNumber != number) added = false;
+                    currentNumber = number;
+
+                    Utils.Log($"NSA - {number} | {currentNumber} | {added}", logToConsole, logToFile);
+
+                    Utils.Log($"Numbers #: {numbers.Count}", logToConsole, logToFile);
+                }
+                else
+                {
+                    Utils.Log("SYMBOL ADJ", logToConsole, logToFile);
+                    var number = FindNumber(line, j);
+                    if (currentNumber != number) added = false;
+                    currentNumber = number;
+
+                    Utils.Log($"SA - {number} | {currentNumber} | {added}", logToConsole, logToFile);
+
+                    if (!added)
+                    {
+                        Utils.Log($"Add Number: {number}", logToConsole, logToFile);                    
+                    
+                        numbers.Add(number);
+                        added = true;
+                    }
+                    
+                    Utils.Log($"Numbers #: {numbers.Count}", logToConsole, logToFile);
                 }
             }
+
+            validNumbers.AddRange(numbers);
         }
+
+        return validNumbers;
+    }
+
+    // void CheckForDuplicates(string line, int lineNumber)
+    // {
+    //     var numbersInLine = FindNumbersInLine(line);
+    //     // bool hasAnyDuplicate = numbersInLine.Count > numbersInLine.Distinct().Count;
+    //     var duplicates = numbersInLine.GroupBy(x => x).Where(g => g.Count() > 1);
+    //     if (duplicates.Any())
+    //     {
+    //         Utils.Answer($"{lineNumber} DUPLICATES");
+    //         foreach (var group in duplicates)
+    //         {
+    //             Console.Write($"{group.Key}: [{string.Join(",", group)}]");
+    //         }
+    //     }
+    //     else
+    //     {
+    //         Utils.Info($"");
+    //     }
+    // }
+
+    public long FindNumber(string line, int currentPos)
+    {
+        // 0123456789
+        // ..35..633.
+        //    .
+
+        StringBuilder sb = new StringBuilder();
+        sb.Insert(0, line[currentPos]); // 5
+
+        var length = line.Length - 1;
+        
+        var position = currentPos;
+        // Check Left (..3)
+        while (position > 0)
+        {
+            position--;
+            var characterToCheck = line[position].ToString();
+            var isNumeric = long.TryParse(characterToCheck, out _);
+            if (isNumeric)
+            {
+                sb.Insert(0, characterToCheck);
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        position = currentPos;
+        // Check Right (..633.)
+        while (position < length)
+        {
+            position++;
+            var characterToCheck = line[position].ToString();
+            var isNumeric = long.TryParse(characterToCheck, out _);
+            if (isNumeric)
+            {
+                sb.Append(characterToCheck);
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        Utils.Log($"FindNumber: '{sb.ToString()}'", logToConsole, logToFile);
+
+        return long.Parse(sb.ToString());
     }
 
     // public void Part2(string[] lines)
@@ -140,8 +302,8 @@ Utils.Log("-----------", true, true);
 
 var day3 = new Day3();
 
-string fileName = @"input-sample.txt";
-// string fileName = @"input.txt";
+// string fileName = @"input-sample.txt";
+string fileName = @"input.txt";
 var lines = Utils.GetLines(fileName);
 
 // Part 1

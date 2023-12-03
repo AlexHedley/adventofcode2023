@@ -47,6 +47,17 @@ public class Day3Tests : IDisposable
     [Arguments('#', true)]
     [Arguments('%', true)]
     [Arguments('.', false)]
+    // [Arguments('1', false)]
+    // [Arguments('2', false)]
+    // [Arguments('3', false)]
+    // [Arguments('4', false)]
+    // [Arguments('5', false)]
+    // [Arguments('6', false)]
+    // [Arguments('7', false)]
+    // [Arguments('8', false)]
+    // [Arguments('9', false)]
+    // [Arguments('0', false)]
+    // [Arguments(default(char), false)]
     public void IsSymbol(char c, bool result)
     {
         var actual = day3.IsSymbol(c);
@@ -57,4 +68,18 @@ public class Day3Tests : IDisposable
     // {
 
     // }
+
+    [Arguments("..35..633.", 2, 35)]
+    [Arguments("..35..633.", 3, 35)]
+    [Arguments("3.35..633.", 3, 35)]
+    [Arguments("..35..633.", 7, 633)]
+    [Arguments("..35..633.", 6, 633)]
+    [Arguments("..35..633.", 8, 633)]
+    [Arguments("...*....*....222..*.........*795..........%...+...#.....54.310.....................622....916.......=......./.........../.......493......956", 137, 956)]
+    // [Arguments("...", 1, 0)]
+    public void FindNumber(string line, int position, long result)
+    {
+        var actual = day3.FindNumber(line, position);
+        actual.Should().Be(result);
+    }
 }

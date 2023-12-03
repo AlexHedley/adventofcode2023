@@ -199,3 +199,9 @@ public static T ToEnumFromValue<T>(this string str)
     //throw exception or whatever handling you want or
     return default(T);
 }
+
+// https://blog.nimblepros.com/blogs/repeat-string-in-csharp/
+public static string RepeatLinq(this string text, int n)
+{
+    return string.Concat(System.Linq.Enumerable.Repeat(text, n));
+}
