@@ -13,17 +13,22 @@ public class Day4Tests : IDisposable
 {
     public Day4 day4;
 
-    public DayTests()
+    public Day4Tests()
     {
         day4 = new Day4();
     }
 
     public void Dispose() { }
 
-    // public void Success()
-    // {
-    //     "Ok".Should().Be("Ok");
-    // }
+    [Arguments(4, 8)]
+    [Arguments(2, 2)]
+    [Arguments(1, 1)]
+    [Arguments(0, 0)]
+    public void CalculateTotal(long input, long result)
+    {
+        var actualResult = day4.CalculateTotal(input);
+        actualResult.Should().Be(result);
+    }
 
     // public void Fail()
     // {
