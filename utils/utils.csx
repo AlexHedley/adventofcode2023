@@ -237,6 +237,14 @@ public static class Utils
         return new string(sb.ToString().Reverse().ToArray());
     }
 
+    // 2021 - Day 5
+    public static List<int> BoundsRange(int lower, int upper)
+    {
+        if (lower > upper)
+            return Enumerable.Range(upper, lower-upper+1).ToList();
+        return Enumerable.Range(lower, upper-lower+1).ToList();
+    }
+
     public static void Log(string message, bool toConsole = false, bool toFile = false)
     {
         if (toConsole) Console.WriteLine(message);
