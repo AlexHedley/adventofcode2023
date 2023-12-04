@@ -266,6 +266,14 @@ public static class Utils
         Console.WriteLine(message);
         Console.ResetColor();
     }
+
+    public static void Error(string message)
+    {
+        Console.BackgroundColor = ConsoleColor.DarkRed;
+        Console.ForegroundColor = ConsoleColor.White;
+        Console.WriteLine(message);
+        Console.ResetColor();
+    }
 }
 
 public static TEnum ToEnum<TEnum>(this string value) where TEnum : struct

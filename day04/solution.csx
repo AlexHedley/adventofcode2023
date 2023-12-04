@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 public class Day4
 {
-    bool logToConsole = true;
+    bool logToConsole = false;
     bool logToFile = true;
 
     public void Part1(string[] lines)
@@ -38,7 +38,6 @@ public class Day4
 
     long Total((string gameNumber, List<string> winningNumbers, List<string> chosenNumbers) game)
     {
-        
         var result = game.winningNumbers.Intersect(game.chosenNumbers).ToList();
         // Utils.Log($"Intersect", logToConsole, logToFile);
         // result.ForEach(Console.WriteLine);
@@ -84,50 +83,56 @@ public class Day4
         var cardsCount = lines.Length;
         Utils.Log($"Card #: {cardsCount}", logToConsole, logToFile);
 
+        // Create a dict to store all card counts.
         Dictionary<int, int> gameTotals = new Dictionary<int, int>(cardsCount);
         for (var i = 1; i < cardsCount + 1; i++)
         {
-            gameTotals[i] = 0;
+            gameTotals[i] = 1;
         }
-        // foreach (var item in gameTotals)
-        // {
-        //     Console.WriteLine("Key "+ item.Key +" Value "+ item.Value);
-        // }
+        PrintDict(gameTotals);
 
         foreach (var line in lines)
         {
+            Utils.Log(line, logToConsole, logToFile);
             var game = BuildGame(line);
+            var gameNum = int.Parse(game.gameNumber);
+            
             var result = Total(game);
-            Utils.Info($"{result}");
-            if (result > 0)
-            {
-                var gameNum = int.Parse(game.gameNumber);
-                gameTotals[gameNum] += 1;
-            }
+            Utils.Log($"Game #: {gameNum} with {result} matching", logToConsole, logToFile);
+            if (result < 1) continue;
 
             var gameNumber = int.Parse(game.gameNumber);
-            Utils.Info($"GameNumber: {gameNumber}");
+            
             var cards = Cards(gameNumber, (int)result);
             foreach(var card in cards)
             {
                 if (card > cardsCount) break;
                 gameTotals[card] += 1;
             }
-            
-            // var calc = CalculateTotal(result);
-            // Utils.Info($"{calc}");
 
-            // total += calc;
-        }
-        foreach (var item in gameTotals)
-        {
-            Console.WriteLine("Key "+ item.Key +" Value "+ item.Value);
+            var toCheck = gameTotals[gameNum] - 1;
+            
+            while (toCheck > 0)
+            {
+                foreach (var card in cards)
+                {
+                    if (card > cardsCount) break;
+                    gameTotals[card] += 1;
+                }
+                toCheck--;
+            }
         }
 
         total = gameTotals.Sum(t => t.Value);
         Utils.Answer($"{total}");
+    }
 
-        // return total;
+    void PrintDict(Dictionary<int, int> dict)
+    {
+        foreach (var item in dict)
+        {
+            Utils.Log($"Key {item.Key}: Value {item.Value}", logToConsole, logToFile);
+        }
     }
 
     public List<int> Cards(int cardNumber, int numberOfCards)
@@ -137,7 +142,7 @@ public class Day4
 
         Utils.Log($"Lower {lower} | Upper {upper}", logToConsole, logToFile);
         var cards = Utils.BoundsRange(lower, upper);
-        cards.ForEach(Console.WriteLine);
+        // cards.ForEach(Console.WriteLine);
         
         return cards;
     }
@@ -149,8 +154,8 @@ Utils.Log("-----------", true, true);
 var day4 = new Day4();
 
 // string fileName = @"input-sample-1.txt";
-string fileName = @"input-sample.txt";
-// string fileName = @"input.txt";
+// string fileName = @"input-sample.txt";
+string fileName = @"input.txt";
 var lines = Utils.GetLines(fileName);
 
 // Part 1
