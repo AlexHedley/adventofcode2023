@@ -2,7 +2,7 @@
 
 public class Day5
 {
-    bool logToConsole = true;
+    bool logToConsole = false;
     bool logToFile = true;
 
     public void Part1(string[] lines)
@@ -42,43 +42,43 @@ public class Day5
         var locations = new List<int>();
 
         // TODO: Remove
-        foreach(var seed in seeds.Take(1))
+        foreach(var seed in seeds)
         {
             // var seed = //79;
             int soil;
             var soilExists = categoryMaps.FirstOrDefault(c => c.SourceName == "seed").Mapping.TryGetValue(seed, out soil);
             if (!soilExists) soil = seed;
-            Utils.Info($"Seed: {seed} -> Soil: {soil}");
+            // Utils.Info($"Seed: {seed} -> Soil: {soil}");
 
             int fertilizer;
             var fertilizerExists = categoryMaps.FirstOrDefault(c => c.SourceName == "soil").Mapping.TryGetValue(soil, out fertilizer);
             if (!fertilizerExists) fertilizer = soil;
-            Utils.Info($"Soil: {soil} -> Fertilizer: {fertilizer}");
+            // Utils.Info($"Soil: {soil} -> Fertilizer: {fertilizer}");
 
             int water;
             var waterExists = categoryMaps.FirstOrDefault(c => c.SourceName == "fertilizer").Mapping.TryGetValue(fertilizer, out water);
             if (!waterExists) water = fertilizer;
-            Utils.Info($"Fertilizer: {fertilizer} -> Water: {water}");
+            // Utils.Info($"Fertilizer: {fertilizer} -> Water: {water}");
 
             int light;
             var lightExists = categoryMaps.FirstOrDefault(c => c.SourceName == "water").Mapping.TryGetValue(water, out light);
             if (!lightExists) light = water;
-            Utils.Info($"Water: {water} -> Light: {light}");
+            // Utils.Info($"Water: {water} -> Light: {light}");
 
             int temperature;
             var temperatureExists = categoryMaps.FirstOrDefault(c => c.SourceName == "light").Mapping.TryGetValue(light, out temperature);
             if (!temperatureExists) temperature = light;
-            Utils.Info($"Light: {light} -> Temperature: {temperature}");
+            // Utils.Info($"Light: {light} -> Temperature: {temperature}");
 
             int humidity;
             var humidityExists = categoryMaps.FirstOrDefault(c => c.SourceName == "temperature").Mapping.TryGetValue(temperature, out humidity);
-            if (!temperatureExists) humidity = temperature;
-            Utils.Info($"Temperature: {temperature} -> Humidity {humidity}");
+            if (!humidityExists) humidity = temperature;
+            // Utils.Info($"Temperature: {temperature} -> Humidity {humidity}");
 
             int location;
             var locationExists = categoryMaps.FirstOrDefault(c => c.SourceName == "humidity").Mapping.TryGetValue(humidity, out location);
             if (!locationExists) location = humidity;
-            Utils.Info($"Humidity {humidity} -> Location: {location}");
+            // Utils.Info($"Humidity {humidity} -> Location: {location}");
 
             locations.Add(location);
         }
@@ -93,84 +93,50 @@ public class Day5
         // 52 50 48
         // D  S
         var categoryMap = new CategoryMap();
-        
-        for (var i = 0; i < categoryMapLines.Count; i++)
+
+        // Get Name
+        var firstLine = categoryMapLines[0];
+        var categoryName = firstLine.Split(' ')[0];
+        categoryMap.CategoryName = categoryName;
+        (string sourceName, string destinationName) names = categoryName.Split('-') switch { var n => ((n[0]), n[^1]) };
+        categoryMap.SourceName = names.sourceName;
+        categoryMap.DestinationName = names.destinationName;
+
+        var mapping = new Dictionary<int, int>();
+        for (var i = 1; i < categoryMapLines.Count; i++)
         {
             var line = categoryMapLines[i];
 
-            // Get Name
-            if (i == 0)
+            var items = line.Split(' ')?.Select(int.Parse)?.ToList();
+            var destinationRangeStart = items[0];
+            var sourceRangeStart = items[1];
+            var rangeLength = items[2];
+            // categoryMap.DestinationRangeStart = destinationRangeStart;
+            // categoryMap.SourceRangeStart = sourceRangeStart;
+            categoryMap.RangeLength += rangeLength;
+
+            // Destination
+            var destinationLower = destinationRangeStart;
+            var destinationUpper = destinationRangeStart + rangeLength - 1;
+            var destinationRange = Utils.BoundsRange(destinationLower, destinationUpper);
+            // categoryMap.DestinationRange = categoryMap.DestinationRange.AddRange(destinationRange);
+
+            // Source
+            var sourceLower = sourceRangeStart;
+            var sourceUpper = sourceRangeStart + rangeLength - 1;
+            var sourceRange = Utils.BoundsRange(sourceLower, sourceUpper);
+            // categoryMap.SourceRange = categoryMap.SourceRange.AddRange(sourceRange);
+
+            // categoryMap.Max = Math.Max(destinationUpper, sourceUpper);
+
+            for (var m = 0; m < rangeLength; m++)
             {
-                var categoryName = line.Split(' ')[0];
-                categoryMap.CategoryName = categoryName;
-                (string sourceName, string destinationName) names = categoryName.Split('-') switch { var n => ((n[0]), n[^1]) };
-                categoryMap.SourceName = names.sourceName;
-                categoryMap.DestinationName = names.destinationName;
+                mapping[sourceRange[m]] = destinationRange[m];
             }
-
-            // Source Category
-            if (i == 1)
-            {
-                var items = line.Split(' ')?.Select(int.Parse)?.ToList();
-                categoryMap.DestinationRangeStart1 = items[0];
-                categoryMap.SourceRangeStart1 = items[1];
-                categoryMap.RangeLength1 = items[2];
-
-                // Destination
-                var destinationLower = items[0];
-                var destinationUpper = items[0] + items[2] - 1;
-                var destinationRange = Utils.BoundsRange(destinationLower, destinationUpper);
-                categoryMap.DestinationRange1 = destinationRange;
-
-                // Source
-                var sourceLower = items[1];
-                var sourceUpper = items[1] + items[2] - 1;
-                var sourceRange = Utils.BoundsRange(sourceLower, sourceUpper);
-                categoryMap.SourceRange1 = sourceRange;
-
-                categoryMap.Max1 = Math.Max(destinationUpper, sourceUpper);
-            }
-
-            // DestinationCategory
-            if (i == 2)
-            {
-                var items2 = line.Split(' ')?.Select(int.Parse)?.ToList();
-                categoryMap.DestinationRangeStart2 = items2[0];
-                categoryMap.SourceRangeStart2 = items2[1];
-                categoryMap.RangeLength2 = items2[2];
-
-                // Destination
-                var destinationLower2 = items2[0];
-                var destinationUpper2 = items2[0] + items2[2] - 1;
-                var destinationRange2 = Utils.BoundsRange(destinationLower2, destinationUpper2);
-                categoryMap.DestinationRange2 = destinationRange2;
-
-                // Source
-                var sourceLower2 = items2[1];
-                var sourceUpper2 = items2[1] + items2[2] - 1;
-                var sourceRange2 = Utils.BoundsRange(sourceLower2, sourceUpper2);
-                categoryMap.SourceRange2 = sourceRange2;
-            }
-        }
-
-        // Create a mapping
-        var mapping = new Dictionary<int, int>();
-        for (var m = 0; m < categoryMap.RangeLength1; m++)
-        {
-            var sourceRangeValue = categoryMap.SourceRange1[m];
-            var destinationRangeValue = categoryMap.DestinationRange1[m];
-            mapping[sourceRangeValue] = destinationRangeValue;
-        }
-
-        for (var m = 0; m < categoryMap.RangeLength2; m++)
-        {
-            var sourceRangeValue2 = categoryMap.SourceRange2[m];
-            var destinationRangeValue2 = categoryMap.DestinationRange2[m];
-            mapping[sourceRangeValue2] = destinationRangeValue2;
         }
 
         categoryMap.Mapping = mapping;
-        // Utils.PrintDictionary<int, int>(mapping);
+        Utils.PrintDictionary<int, int>(mapping, logToConsole, logToFile);
 
         // Fill in the missing?
         // Assume if not there then return same number?
@@ -218,33 +184,26 @@ public class CategoryMap
     public string CategoryName = "";
 
     public string SourceName = "";
-    public int SourceRangeStart1 = 0;
-    public List<int> SourceRange1 = new();
-    public int SourceRangeStart2 = 0;
-    public List<int> SourceRange2 = new();
+    // public int SourceRangeStart = 0;
+    // public List<int> SourceRange = new();
 
     public string DestinationName = "";
     
-    public int DestinationRangeStart1 = 0;
-    public List<int> DestinationRange1 = new();
+    // public int DestinationRangeStart = 0;
+    // public List<int> DestinationRange = new();
 
-    public int DestinationRangeStart2 = 0;
-    public List<int> DestinationRange2 = new();
-
-    public int RangeLength1 = 0;
-    public int RangeLength2 = 0;
-    public int Max1 = 0;
-    public int Max2 = 0;
+    public int RangeLength = 0;
+    // public int Max = 0;
 
     public Dictionary<int, int> Mapping = new();
 
     public override string ToString()
     {
-        return $"{CategoryName} | SourceName: {SourceName} | DestinationName: {DestinationName} | " +
-            $"Range1 : {RangeLength1} | Max : {Max1} | " +
-            $"Source Range: {String.Join(',', SourceRange1)} | Destination Range {String.Join(',', DestinationRange1)} | " +
-            $"Range2 : {RangeLength2} | Max2 : {Max2} | " +
-            $"Source Range2: {String.Join(',', SourceRange2)} | Destination Range2 {String.Join(',', DestinationRange2)}";
+        return $"{CategoryName} | SourceName: {SourceName} | DestinationName: {DestinationName}" +
+            $" | Range : {RangeLength}" +
+            $" | Mapping # : {Mapping.Count}"; // +
+            // $" | Max : {Max}" +
+            // $" | Source Range: {String.Join(',', SourceRange)} | Destination Range {String.Join(',', DestinationRange)} ";
     }
 }
 
@@ -254,8 +213,8 @@ Utils.Log("-----------", true, true);
 var day5 = new Day5();
 
 // string fileName = @"input-sample-1.txt";
-string fileName = @"input-sample.txt";
-// string fileName = @"input.txt";
+// string fileName = @"input-sample.txt";
+string fileName = @"input.txt";
 var lines = Utils.GetLines(fileName);
 
 // Part 1

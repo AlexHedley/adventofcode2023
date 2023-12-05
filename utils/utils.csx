@@ -271,9 +271,11 @@ public static class Utils
         Console.WriteLine(printOut);
     }
 
-    public static void PrintDictionary<T, R>(Dictionary<T, R> dictionary)
+    public static void PrintDictionary<T, R>(Dictionary<T, R> dictionary, bool toConsole = false, bool toFile = false)
     {
-        dictionary.Select(i => $"{i.Key}: {i.Value}").ToList().ForEach(Console.WriteLine);
+        var items = dictionary.Select(i => $"{i.Key}: {i.Value}").ToList();
+        if (toConsole) items.ForEach(Console.WriteLine);
+        // if (toFile) File.AppendAllLines(@"debug.log", new[] { items });
     }
 
     #region Logging
