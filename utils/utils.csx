@@ -245,6 +245,21 @@ public static class Utils
         return Enumerable.Range(lower, upper-lower+1).ToList();
     }
 
+    public static List<long> CreateList(long lower, long numberOfItems)
+    {
+        var items = new List<long>();
+
+        for (var i = 0; i < numberOfItems; i++)
+        {
+            items.Add(lower);
+            lower++;
+        }
+
+        // items.ForEach(Console.WriteLine);
+        
+        return items;
+    }
+
     public static List<int> BoundsRange(Bounds x)
     {
         return Enumerable.Range(x.Lower, x.Upper - x.Lower + 1).ToList();

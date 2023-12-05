@@ -16,7 +16,7 @@ public class Day5
         var seeds = lines[0]
                         .Split(':')[1]
                         .Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                        ?.Select(int.Parse)?.ToList();
+                        ?.Select(long.Parse)?.ToList();
 
         Utils.Log($"Seeds: {String.Join(',', seeds)}", logToConsole, logToFile);
         
@@ -37,45 +37,45 @@ public class Day5
         Utils.Answer($"{minLocation}");
     }
 
-    public List<int> GetLocations(List<int> seeds, List<CategoryMap> categoryMaps)
+    public List<long> GetLocations(List<long> seeds, List<CategoryMap> categoryMaps)
     {
-        var locations = new List<int>();
+        var locations = new List<long>();
 
         // TODO: Remove
         foreach(var seed in seeds)
         {
             // var seed = //79;
-            int soil;
+            long soil;
             var soilExists = categoryMaps.FirstOrDefault(c => c.SourceName == "seed").Mapping.TryGetValue(seed, out soil);
             if (!soilExists) soil = seed;
             // Utils.Info($"Seed: {seed} -> Soil: {soil}");
 
-            int fertilizer;
+            long fertilizer;
             var fertilizerExists = categoryMaps.FirstOrDefault(c => c.SourceName == "soil").Mapping.TryGetValue(soil, out fertilizer);
             if (!fertilizerExists) fertilizer = soil;
             // Utils.Info($"Soil: {soil} -> Fertilizer: {fertilizer}");
 
-            int water;
+            long water;
             var waterExists = categoryMaps.FirstOrDefault(c => c.SourceName == "fertilizer").Mapping.TryGetValue(fertilizer, out water);
             if (!waterExists) water = fertilizer;
             // Utils.Info($"Fertilizer: {fertilizer} -> Water: {water}");
 
-            int light;
+            long light;
             var lightExists = categoryMaps.FirstOrDefault(c => c.SourceName == "water").Mapping.TryGetValue(water, out light);
             if (!lightExists) light = water;
             // Utils.Info($"Water: {water} -> Light: {light}");
 
-            int temperature;
+            long temperature;
             var temperatureExists = categoryMaps.FirstOrDefault(c => c.SourceName == "light").Mapping.TryGetValue(light, out temperature);
             if (!temperatureExists) temperature = light;
             // Utils.Info($"Light: {light} -> Temperature: {temperature}");
 
-            int humidity;
+            long humidity;
             var humidityExists = categoryMaps.FirstOrDefault(c => c.SourceName == "temperature").Mapping.TryGetValue(temperature, out humidity);
             if (!humidityExists) humidity = temperature;
             // Utils.Info($"Temperature: {temperature} -> Humidity {humidity}");
 
-            int location;
+            long location;
             var locationExists = categoryMaps.FirstOrDefault(c => c.SourceName == "humidity").Mapping.TryGetValue(humidity, out location);
             if (!locationExists) location = humidity;
             // Utils.Info($"Humidity {humidity} -> Location: {location}");
@@ -102,12 +102,12 @@ public class Day5
         categoryMap.SourceName = names.sourceName;
         categoryMap.DestinationName = names.destinationName;
 
-        var mapping = new Dictionary<int, int>();
+        var mapping = new Dictionary<long, long>();
         for (var i = 1; i < categoryMapLines.Count; i++)
         {
             var line = categoryMapLines[i];
 
-            var items = line.Split(' ')?.Select(int.Parse)?.ToList();
+            var items = line.Split(' ')?.Select(long.Parse)?.ToList();
             var destinationRangeStart = items[0];
             var sourceRangeStart = items[1];
             var rangeLength = items[2];
@@ -117,18 +117,19 @@ public class Day5
 
             // Destination
             var destinationLower = destinationRangeStart;
-            var destinationUpper = destinationRangeStart + rangeLength - 1;
-            var destinationRange = Utils.BoundsRange(destinationLower, destinationUpper);
+            // var destinationUpper = destinationRangeStart + rangeLength - 1;
+            var destinationRange = Utils.CreateList(destinationLower, rangeLength);
             // categoryMap.DestinationRange = categoryMap.DestinationRange.AddRange(destinationRange);
 
             // Source
             var sourceLower = sourceRangeStart;
-            var sourceUpper = sourceRangeStart + rangeLength - 1;
-            var sourceRange = Utils.BoundsRange(sourceLower, sourceUpper);
+            // var sourceUpper = sourceRangeStart + rangeLength - 1;
+            var sourceRange = Utils.CreateList(sourceLower, rangeLength);
             // categoryMap.SourceRange = categoryMap.SourceRange.AddRange(sourceRange);
 
             // categoryMap.Max = Math.Max(destinationUpper, sourceUpper);
 
+            if (sourceRange.Count == 0 || destinationRange.Count == 0) continue;
             for (var m = 0; m < rangeLength; m++)
             {
                 mapping[sourceRange[m]] = destinationRange[m];
@@ -136,7 +137,7 @@ public class Day5
         }
 
         categoryMap.Mapping = mapping;
-        Utils.PrintDictionary<int, int>(mapping, logToConsole, logToFile);
+        Utils.PrintDictionary<long, long>(mapping, logToConsole, logToFile);
 
         // Fill in the missing?
         // Assume if not there then return same number?
@@ -184,18 +185,18 @@ public class CategoryMap
     public string CategoryName = "";
 
     public string SourceName = "";
-    // public int SourceRangeStart = 0;
-    // public List<int> SourceRange = new();
+    // public long SourceRangeStart = 0;
+    // public List<long> SourceRange = new();
 
     public string DestinationName = "";
     
-    // public int DestinationRangeStart = 0;
-    // public List<int> DestinationRange = new();
+    // public long DestinationRangeStart = 0;
+    // public List<long> DestinationRange = new();
 
-    public int RangeLength = 0;
-    // public int Max = 0;
+    public long RangeLength = 0;
+    // public long Max = 0;
 
-    public Dictionary<int, int> Mapping = new();
+    public Dictionary<long, long> Mapping = new();
 
     public override string ToString()
     {
