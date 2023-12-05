@@ -245,6 +245,39 @@ public static class Utils
         return Enumerable.Range(lower, upper-lower+1).ToList();
     }
 
+    public static List<int> BoundsRange(Bounds x)
+    {
+        return Enumerable.Range(x.Lower, x.Upper - x.Lower + 1).ToList();
+    }
+
+    public static void PrintRange(List<int> range)
+    {
+        string printOut = "";
+        for (int i = range.Min(); i <= range.Max(); i++)
+        {
+            if (range.Contains(i))
+            {
+                printOut += i + " ";
+            }
+            else
+            {
+                printOut += ".";
+            }
+        }
+        printOut += "  ";
+        
+        printOut += $"{range[0]}-{range[^1]}";
+        
+        Console.WriteLine(printOut);
+    }
+
+    public static void PrintDictionary<T, R>(Dictionary<T, R> dictionary)
+    {
+        dictionary.Select(i => $"{i.Key}: {i.Value}").ToList().ForEach(Console.WriteLine);
+    }
+
+    #region Logging
+
     public static void Log(string message, bool toConsole = false, bool toFile = false)
     {
         if (toConsole) Console.WriteLine(message);
@@ -274,6 +307,22 @@ public static class Utils
         Console.WriteLine(message);
         Console.ResetColor();
     }
+
+    #endregion Logging
+}
+
+public struct Bounds
+{
+    public Bounds(int lower, int upper)
+    {
+        Lower = lower;
+        Upper = upper;
+    }
+
+    public int Lower { get; }
+    public int Upper { get; }
+
+    public override string ToString() => $"{Lower}..{Upper}";
 }
 
 public static TEnum ToEnum<TEnum>(this string value) where TEnum : struct
@@ -301,3 +350,20 @@ public static string RepeatLinq(this string text, int n)
 {
     return string.Concat(System.Linq.Enumerable.Repeat(text, n));
 }
+
+// // https://stackoverflow.com/a/2601501
+// public static TValue GetValueOrDefault<TKey, TValue>(
+//     this IDictionary<TKey, TValue> dictionary,
+//     TKey key,
+//     TValue defaultValue)
+// {
+//     return dictionary.TryGetValue(key, out var value) ? value : defaultValue;
+// }
+
+// public static TValue GetValueOrDefault<TKey, TValue>(
+//     this IDictionary<TKey, TValue> dictionary,
+//     TKey key,
+//     Func<TValue> defaultValueProvider)
+// {
+//     return dictionary.TryGetValue(key, out var value) ? value : defaultValueProvider();
+// }
