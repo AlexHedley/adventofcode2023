@@ -13,7 +13,7 @@
 
 ## Ranking
 
-Private Leaderboard
+*Private Leaderboard*
 
 ```bash
    |     |                   1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2
@@ -34,7 +34,7 @@ Key: \* Both | ■ One | ° None |
 - [Day 3](day03/README.md)
 - [Day 4](day04/README.md)
 - [Day 5](day05/README.md) *
-  <!-- - [Day 6](day06/README.md) -->
+- [Day 6](day06/README.md) *
   <!-- - [Day 7](day07/README.md) -->
   <!-- - [Day 8](day08/README.md) -->
   <!-- - [Day 9](day09/README.md) -->
@@ -79,7 +79,7 @@ Copy the [day](day/) folder and use.
 
 How to run the solution file for each day depends on the language.
 
-### C#
+### C\#
 
 Any C# scripts will require [dotnet-script](https://github.com/filipw/dotnet-script) and [ScriptUnit](https://github.com/seesharper/ScriptUnit).
 
