@@ -102,7 +102,8 @@ Utils.Log("-----------", true, true);
 var day6 = new Day6();
 
 // string fileName = @"input-sample.txt";
-string fileName = @"input.txt";
+// string fileName = @"input.txt";
+string fileName = @"input-2.txt";
 var lines = Utils.GetLines(fileName);
 
 // Part 1
