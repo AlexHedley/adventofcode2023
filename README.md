@@ -35,7 +35,7 @@ Key: \* Both | ■ One | ° None |
 - [Day 4](day04/README.md)
 - [Day 5](day05/README.md) *
 - [Day 6](day06/README.md)
-  <!-- - [Day 7](day07/README.md) -->
+- [Day 7](day07/README.md) *
   <!-- - [Day 8](day08/README.md) -->
   <!-- - [Day 9](day09/README.md) -->
   <!-- - [Day 10](day10/README.md) -->
@@ -93,6 +93,8 @@ or
 
 - `dotnet script dayXX/solution.csx`
 - `dotnet script dayXX/tests.csx`
+
+#### Libraries
 
 - [ScriptUnit](https://github.com/seesharper/ScriptUnit)
 - [Fluent Assertions](https://github.com/fluentassertions/fluentassertions)
