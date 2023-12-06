@@ -384,3 +384,11 @@ public static string RepeatLinq(this string text, int n)
 // {
 //     return dictionary.TryGetValue(key, out var value) ? value : defaultValueProvider();
 // }
+
+// https://stackoverflow.com/a/14591148
+public static string RemoveWhitespace(this string input)
+{
+    return new string(input.ToCharArray()
+        .Where(c => !Char.IsWhiteSpace(c))
+        .ToArray());
+}

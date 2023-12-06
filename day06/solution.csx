@@ -80,9 +80,36 @@ public class Day6
         return data;
     }
 
-    // public void Part2(string[] lines)
-    // {
-    // }
+    public void Part2(string[] lines)
+    {
+        // Time:        41     96     88     94
+        // Distance:   214   1789   1127   1055
+
+        var newLines = new List<string>();
+        // Remove spaces
+        foreach(var line in lines)
+        {
+            var trimmed = RemoveWhitespace(line);
+            Utils.Log($"{trimmed}", logToConsole, logToFile);
+            newLines.Add(trimmed);
+        }
+
+        lines = newLines.ToArray();
+
+        var data = new List<List<long>>();
+        data = ParseLines(lines);
+        Utils.Log($"List #: {data.Count}", logToConsole, logToFile);
+        
+        var races = new List<Race>();
+        races = CreateRaces(data);
+        // races.ForEach(Console.WriteLine);
+
+        var counts = new List<long>();
+        counts = CalculateTimes(races);
+
+        var total = counts.Aggregate((a, x) => a * x);
+        Utils.Answer($"{total}");
+    }
 }
 
 public class Race
@@ -102,17 +129,17 @@ Utils.Log("-----------", true, true);
 var day6 = new Day6();
 
 // string fileName = @"input-sample.txt";
-// string fileName = @"input.txt";
-string fileName = @"input-2.txt";
+// string fileName = @"input-sample-2.txt";
+string fileName = @"input.txt";
 var lines = Utils.GetLines(fileName);
 
 // Part 1
-Utils.Log("Part 1", true, true);
-day6.Part1(lines);
+// Utils.Log("Part 1", true, true);
+// day6.Part1(lines);
 
 // Part 2
-// Utils.Log("Part 2", true, true);
-// day6.Part2(lines);
+Utils.Log("Part 2", true, true);
+day6.Part2(lines);
 
 Console.WriteLine("Press any key to exit.");
 System.Console.ReadKey();
