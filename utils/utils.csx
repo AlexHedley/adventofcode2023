@@ -301,28 +301,34 @@ public static class Utils
         if (toFile) File.AppendAllLines(@"debug.log", new[] { message });
     }
 
-    public static void Answer(string answer)
+    public static void Answer(string answer, bool toConsole = false, bool toFile = false)
     {
         Console.BackgroundColor = ConsoleColor.DarkGreen;
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine(answer);
+        if (toConsole) Console.WriteLine(answer);
         Console.ResetColor();
+
+        if (toFile) File.AppendAllLines(@"debug.log", new[] { $"ANSWER: {answer}" });
     }
 
-    public static void Info(string message)
+    public static void Info(string message, bool toConsole = false, bool toFile = false)
     {
         Console.BackgroundColor = ConsoleColor.DarkBlue;
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine(message);
+        if (toConsole) Console.WriteLine(message);
         Console.ResetColor();
+
+        if (toFile) File.AppendAllLines(@"debug.log", new[] { $"INFO: {message}" });
     }
 
-    public static void Error(string message)
+    public static void Error(string message, bool toConsole = false, bool toFile = false)
     {
         Console.BackgroundColor = ConsoleColor.DarkRed;
         Console.ForegroundColor = ConsoleColor.White;
-        Console.WriteLine(message);
+        if (toConsole) Console.WriteLine(message);
         Console.ResetColor();
+
+        if (toFile) File.AppendAllLines(@"debug.log", new[] { message });
     }
 
     #endregion Logging
