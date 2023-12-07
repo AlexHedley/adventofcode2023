@@ -16,18 +16,28 @@ public class Day7
         }
 
         var orderedPlayers = players.OrderByDescending(p => p.InitialRanking).ToList();
-        players = RecalculateHands(orderedPlayers);
-        players.ForEach(Console.WriteLine);  
+        // players = RecalculateHands(orderedPlayers);
+        players = SortArrays(orderedPlayers);
+        // players.ForEach(Console.WriteLine);
+        var rank = players.Count;
+        foreach (var player in players)
+        {
+            player.Rank = rank;
+            rank--;
+        }
+        players.ForEach(Console.WriteLine);
         
-        Utils.Log($"", logToConsole, logToFile);
+        // Utils.Log($"", logToConsole, logToFile);
 
-        orderedPlayers  = players.OrderByDescending(p => p.Rank).ToList();
-        orderedPlayers.ForEach(p => Utils.Log($"{p}", logToConsole, logToFile));
+        // orderedPlayers  = players.OrderByDescending(p => p.Rank).ToList();
+        // orderedPlayers.ForEach(p => Utils.Log($"{p}", logToConsole, logToFile));
 
-        var distinctRanks = players.Distinct().Count() == players.Count();
-        Utils.Info($"Distinct Ranks: {distinctRanks}", logToConsole, logToFile);
+        // var distinctRanks = players.Distinct().Count() == players.Count();
+        // Utils.Info($"Distinct Ranks: {distinctRanks}", logToConsole, logToFile);
 
-        var total = CalculateTotal(orderedPlayers);
+        // var total = CalculateTotal(orderedPlayers);
+        var total = CalculateTotal(players);
+
         Utils.Answer($"{total}", true, logToFile);
     }
 
@@ -43,6 +53,52 @@ public class Day7
         }
 
         return total;
+    }
+
+    List<Details> SortArrays(List<Details> players)
+    {
+        var sortedPlayers = new List<Details>();
+
+        for (int i = 7; i > 0; i--)
+        {
+            var rankBy = players.Where(p => p.InitialRanking == i).ToList();
+            var sorted = SortArray(rankBy);
+            sortedPlayers.AddRange(sorted);
+        }
+        
+        return sortedPlayers;
+    }
+
+    // https://code-maze.com/csharp-bubble-sort/
+    public List<Details> SortArray(List<Details> players) 
+    {
+        var n = players.Count;
+        Utils.Log($"Player #: {n}", logToConsole, logToFile);
+            
+        for (int i = 0; i < n - 1; i++)
+        {
+            for (int j = 0; j < n - i - 1; j++)
+            {
+                var p1 = players[j];
+                Utils.Log($"P1 IR: {p1.InitialRanking} (Hand: {string.Join(",", p1.Hand)})", logToConsole, logToFile);
+                var p2 = players[j+1];
+                Utils.Log($"P2 IR: {p2.InitialRanking} (Hand: {string.Join(",", p2.Hand)})", logToConsole, logToFile);
+
+                var winner = CalculateWinner(p1.Hand, p2.Hand);
+                Utils.Log($"winner {winner}", logToConsole, logToFile);
+                // if (NumArray[j] > NumArray[j + 1])
+                if (winner == 2)
+                {
+                    Utils.Log($"Swap 1 with 2", logToConsole, logToFile);
+                    var tempVar = players[j];
+                    players[j] = players[j + 1];
+                    players[j + 1] = tempVar;
+                }
+            }
+        }
+
+        // players.ForEach(p => Utils.Log($"{p}", logToConsole, logToFile));
+        return players;
     }
 
     public List<Details> RecalculateHands(List<Details> players)
@@ -72,10 +128,6 @@ public class Day7
             var p2 = players[i+1];
             Utils.Log($"P2 IR: {p2.InitialRanking} (Hand: {string.Join(",", p2.Hand)})", logToConsole, logToFile);
 
-            // // Set first player to count;
-            // p1.Rank = count;
-            // p2.Rank = count--;
-
             // if InitialRanking match - Compare current player with next.
             if (p1.InitialRanking == p2.InitialRanking)
             {
@@ -95,10 +147,10 @@ public class Day7
                     Utils.Log($"P2 Greater", logToConsole, logToFile);
                     p1.Rank = rank - 1;
                     p2.Rank = rank;
+
+                    // Swap.
+                    players.Swap(i, i+1);
                 }
-                // Jump a player
-                i++;
-                rank = rank - 2;
             }
             else
             {
@@ -113,24 +165,25 @@ public class Day7
                 {
                     p1.Rank = rank - 1;
                     p2.Rank = rank;
+
+                    // Swap.
+                    players.Swap(i, i+1);
                 }
-                i++;
-                rank = rank - 2;
             }
 
             Utils.Log($"P1 {p1}", logToConsole, logToFile);
             Utils.Log($"P2 {p2}", logToConsole, logToFile);
             Utils.Log($"i {i} | Rank {rank} | Count {count} ", logToConsole, logToFile);
 
-            // rank = rank - 2;
+            rank = rank - 1;
         }
 
+        Utils.Log($"Done", logToConsole, logToFile);
         return players;
     }
 
     public long CalculateWinner(List<string> hand1, List<string> hand2)
     {
-        var winner = 0;
         var count = hand1.Count();
 
         for (var i = 0; i < count; i++)

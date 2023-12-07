@@ -398,3 +398,22 @@ public static string RemoveWhitespace(this string input)
         .Where(c => !Char.IsWhiteSpace(c))
         .ToArray());
 }
+
+// https://stackoverflow.com/a/2094316
+// var lst = new List<int>() { 8, 3, 2, 4 };
+// lst = lst.Swap(1, 2);
+public static void Swap<T>(this IList<T> list, int indexA, int indexB)
+{
+    Utils.Log($"Swap", true, true);
+    T tmp = list[indexA];
+    list[indexA] = list[indexB];
+    list[indexB] = tmp;
+}
+
+// public static IList<T> Swap<T>(this IList<T> list, int indexA, int indexB)
+// {
+//     T tmp = list[indexA];
+//     list[indexA] = list[indexB];
+//     list[indexB] = tmp;
+//     return list;
+// }
