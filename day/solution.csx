@@ -5,6 +5,8 @@ public class Day
     bool logToConsole = true;
     bool logToFile = true;
 
+    // Utils.Log($"{}", logToConsole, logToFile);
+
     public void Part1(string[] lines)
     {
 
