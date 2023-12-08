@@ -17,16 +17,22 @@ public class Day8
         var networkNodes = lines.Skip(2).Take(count);
 
         var nodes = BuildData(networkNodes);
-        var steps = CalculateSteps(nodes, instructions);
-        Utils.Log($"steps:{steps.Item1} {steps.Item2}", logToConsole, logToFile);
-        Utils.Log($"DONE", logToConsole, logToFile);
+        
+        // Look this up.
+        // var item = new KeyValuePair<string, (string, string)>("AAA", ("BBB", "CCC"));
+        // var item = new KeyValuePair<string, (string, string)>("AAA", ("GQR", "SSS"));
+        var item = nodes["AAA"];
+
+        var steps = CalculateSteps(nodes, instructions, item);
+        Utils.Log($"steps:{steps}", logToConsole, logToFile);
+        Utils.Answer($"{steps}");
     }
 
-    public (bool, long) CalculateSteps(Dictionary<string, (string, string)> nodes, char[] instructions)
+    public int CalculateSteps(Dictionary<string, (string, string)> nodes, char[] instructions, (string, string) item)
     {
         var steps = 0;
         var i = 1;
-        var item = nodes["AAA"];
+        // var item = nodes["AAA"];
         Utils.Log($"ITEM: {item}", logToConsole, logToFile);
 
         while (true)
@@ -36,25 +42,24 @@ public class Day8
             {
                 if (direction == 'L')
                 {
-                    if (matching == item.Item1) return (false, steps);
+                    if (matching == item.Item1) return steps;
                     matching = item.Item1;
                     Utils.Log($"L: {matching}", logToConsole, logToFile);
                 }
                 if (direction == 'R')
                 {
-                    if (matching == item.Item1) return (false, steps);
+                    if (matching == item.Item1) return steps;
                     matching = item.Item2;
                     Utils.Log($"R: {matching}", logToConsole, logToFile);
                 }
                 
                 steps++;
-                if (matching == "ZZZ") return (true, steps);
+                if (matching.EndsWith("Z")) return steps;
                 
                 item = nodes[matching];
                 Utils.Log($"ITEM: {item}", logToConsole, logToFile);
             }
         }
-        
     }
 
     public Dictionary<string, (string, string)> BuildData(IEnumerable<string> networkNodes)
@@ -75,9 +80,50 @@ public class Day8
         return nodes;
     }
 
-    // public void Part2(string[] lines)
-    // {
-    // }
+    public void Part2(string[] lines)
+    {
+        var instructionsLine = lines[0];
+        var instructions = instructionsLine.ToCharArray();
+        Utils.Log($"{string.Join(',', instructions)}", logToConsole, logToFile);
+
+        var count = lines.Length - 2;
+        var networkNodes = lines.Skip(2).Take(count);
+
+        var nodes = BuildData(networkNodes);
+
+        var startingNodes = GetStartingNodes(nodes);
+
+        var stepsList = new List<int>();
+        foreach (var startingNode in startingNodes)
+        {
+            var steps = CalculateSteps(nodes, instructions, startingNode.Value);
+            Utils.Info($"steps:{steps}", logToConsole, logToFile);
+            stepsList.Add(steps);
+        }
+
+        var answer = Utils.test(stepsList.ToArray());
+        Utils.Answer($"{answer}", logToConsole, logToFile);
+    }
+
+    // i loop count
+    // a % i == 0 && b % i == 0 && c % i == 0 or 
+
+    public List<KeyValuePair<string, (string, string)>> GetStartingNodes(Dictionary<string, (string, string)> nodes)
+    {
+        var starting = new List<KeyValuePair<string, (string, string)>>();
+        // find Zs.
+        foreach (var node in nodes)
+        {
+            Utils.Log($"{node.Key}", logToConsole, logToFile);
+            if (node.Key.EndsWith("Z"))
+            {
+                starting.Add(node);
+            }
+        }
+        Utils.Log($"S#: {starting.Count}", logToConsole, logToFile);
+
+        return starting;
+    }
 }
 
 Utils.Log("-- Day 8 --", true, true);
@@ -87,16 +133,17 @@ var day8 = new Day8();
 
 // string fileName = @"input-sample.txt";
 // string fileName = @"input-sample-1.txt";
+// string fileName = @"input-sample-2.txt";
 string fileName = @"input.txt";
 var lines = Utils.GetLines(fileName);
 
 // Part 1
-Utils.Log("Part 1", true, true);
-day8.Part1(lines);
+// Utils.Log("Part 1", true, true);
+// day8.Part1(lines);
 
 // Part 2
-// Utils.Log("Part 2", true, true);
-// day8.Part2(lines);
+Utils.Log("Part 2", true, true);
+day8.Part2(lines);
 
 Console.WriteLine("Press any key to exit.");
 System.Console.ReadKey();

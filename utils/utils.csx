@@ -293,6 +293,45 @@ public static class Utils
         // if (toFile) File.AppendAllLines(@"debug.log", new[] { items });
     }
 
+    // // Least Common Multiple
+    // // https://stackoverflow.com/a/20824923
+    static int gcf(int a, int b)
+    {
+        while (b != 0)
+        {
+            int temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+
+    static int lcm(int a, int b)
+    {
+        return (a / gcf(a, b)) * b;
+    }
+
+    // https://www.w3resource.com/csharp-exercises/math/csharp-math-exercise-20.php
+    // int[] nums1 = { 4, 6, 8 };                       // test(nums1) // 24
+    // int[] nums2 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 }; // test(nums2) // 2520
+    // int[] nums3 = { 48, 72, 108 };                   // test(nums3) // 432
+    static int gcd(int n1, int n2)
+    {
+        if (n2 == 0)
+        {
+            return n1;
+        }
+        else
+        {
+            return gcd(n2, n1 % n2);
+        }
+    }
+
+    public static int test(int[] numbers)
+    {
+        return numbers.Aggregate((S, val) => S * val / gcd(S, val));
+    }
+
     #region Logging
 
     public static void Log(string message, bool toConsole = false, bool toFile = false)
