@@ -45,8 +45,6 @@ public class Day9
         return nextValue;
     }
 
-    
-
     public List<List<long>> CalculateLines(string line)
     {
         Utils.Log($"{line}", logToConsole, logToFile);
@@ -86,27 +84,63 @@ public class Day9
         return lineCalcs;
     }
 
-    // public void Part2(string[] lines)
-    // {
-    // }
+    public void Part2(string[] lines)
+    {
+        var total = 0L;
+        foreach (var line in lines)
+        {
+            var nextValue = CalculateNextValue2(line);
+            total += nextValue;
+        }
+        Utils.Answer($"{total}", true, logToFile);
+    }
+
+    public long CalculateNextValue2(string line)
+    {
+        var lineCalcs = CalculateLines(line);
+
+        var c = lineCalcs.Count;
+        var nextValue = 0L;
+        for (var i = c-1; i > 0; i--)
+        {
+            // Get last element of the last line.
+            // var lastLine = lineCalcs[c];
+            // var lastItemLastLine = lastLine.Last();
+            var lastItemLastLine = nextValue;
+            Utils.Info($"{lastItemLastLine}", logToConsole, logToFile);
+
+            var secondLastLine = lineCalcs[i-1];
+            var lastItemSecondLastLine = secondLastLine.First();
+            Utils.Info($"{lastItemSecondLastLine}", logToConsole, logToFile);
+            
+            nextValue = lastItemSecondLastLine - lastItemLastLine;
+            Utils.Info($"{nextValue} ({lastItemLastLine} + {lastItemSecondLastLine})", logToConsole, logToFile);
+
+            lastItemLastLine = nextValue;
+        }
+        
+        return nextValue;
+    }
+
 }
 
-Utils.Log("-- Day # --", true, true);
+Utils.Log("-- Day 9 --", true, true);
 Utils.Log("-----------", true, true);
 
 var day9 = new Day9();
 
 // string fileName = @"input-sample.txt";
+// string fileName = @"input-sample-2.txt";
 string fileName = @"input.txt";
 var lines = Utils.GetLines(fileName);
 
 // Part 1
-Utils.Log("Part 1", true, true);
-day9.Part1(lines);
+// Utils.Log("Part 1", true, true);
+// day9.Part1(lines);
 
 // Part 2
-// Utils.Log("Part 2", true, true);
-// day9.Part2(lines);
+Utils.Log("Part 2", true, true);
+day9.Part2(lines);
 
 Console.WriteLine("Press any key to exit.");
 System.Console.ReadKey();

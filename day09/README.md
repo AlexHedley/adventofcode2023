@@ -7,11 +7,11 @@ Output from [input.txt](input.txt).
 
 **Part 1**
 
-> 
+> 2038472161
 
 **Part 2**
 
-> 
+> 1091
 
 ---
 
