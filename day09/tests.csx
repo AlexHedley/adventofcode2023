@@ -11,7 +11,7 @@ return await AddTestsFrom<Day9Tests>().Execute();
 
 public class Day9Tests : IDisposable
 {
-    public Day day;
+    public Day9 day9;
 
     public Day9Tests()
     {
