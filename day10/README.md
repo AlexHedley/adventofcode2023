@@ -1,17 +1,17 @@
-# Day 9
+# Day 10
 
 - [Puzzle](PUZZLE.md)
 
 Output from [input.txt](input.txt).
-<!-- Output from [input.txt](day9/input.txt). -->
+<!-- Output from [input.txt](day10/input.txt). -->
 
 **Part 1**
 
-> 2038472161
+> 
 
 **Part 2**
 
-> 1091
+> 
 
 ---
 
@@ -27,5 +27,5 @@ Output from [input.txt](input.txt).
 
 Or
 
-`dotnet script day9/solution.csx`
-`dotnet script day9/tests.csx`
+`dotnet script day10/solution.csx`
+`dotnet script day10/tests.csx`
