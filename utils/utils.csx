@@ -67,7 +67,7 @@ public static class Utils
     }
 
     // Print Matrix
-    public static void PrintMatrix<T>(T[,] matrix)
+    public static void PrintMatrix<T>(T[,] matrix, bool toConsole = false, bool toFile = false)
     {
         int rowLength = matrix.GetLength(0);
         int colLength = matrix.GetLength(1);
@@ -76,11 +76,14 @@ public static class Utils
         {
             for (int j = 0; j < colLength; j++)
             {
-                Console.Write($"{matrix[i, j]}");
+                if (toConsole) Console.Write($"{matrix[i, j]}");
+                if (toFile) File.AppendAllLines(@"debug.log", new[] { $"{matrix[i, j]}" });
             }
-            Console.Write(Environment.NewLine);
+            if (toConsole) Console.Write(Environment.NewLine);
+            if (toFile) File.AppendAllLines(@"debug.log", new[] { Environment.NewLine });
         }
-        Console.WriteLine();
+        if (toConsole) Console.WriteLine();
+        if (toFile) File.AppendAllLines(@"debug.log", new[] { Environment.NewLine });
     }
 
     // Loop Matrix
@@ -265,7 +268,7 @@ public static class Utils
         return Enumerable.Range(x.Lower, x.Upper - x.Lower + 1).ToList();
     }
 
-    public static void PrintRange(List<int> range)
+    public static void PrintRange(List<int> range, bool toConsole = false, bool toFile = false)
     {
         string printOut = "";
         for (int i = range.Min(); i <= range.Max(); i++)
@@ -283,7 +286,8 @@ public static class Utils
         
         printOut += $"{range[0]}-{range[^1]}";
         
-        Console.WriteLine(printOut);
+        if (toConsole) Console.WriteLine(printOut);
+        if (toFile) File.AppendAllLines(@"debug.log", new[] { printOut });
     }
 
     public static void PrintDictionary<T, R>(Dictionary<T, R> dictionary, bool toConsole = false, bool toFile = false)
