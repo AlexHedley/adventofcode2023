@@ -1,5 +1,7 @@
 #load "../utils/utils.csx"
 
+#load "GFG.csx"
+
 public class Day11
 {
     bool logToConsole = true;
@@ -13,7 +15,7 @@ public class Day11
         var cols = lines[0].Length;
 
         var matrix = Utils.GenerateMatrix<string>(lines, rows, cols);
-        Utils.PrintMatrix(matrix, logToConsole, logToFile);
+        // Utils.PrintMatrix(matrix, logToConsole, logToFile);
 
         // var row = Utils.GetRow(matrix, 0); //rowIndex
         // Utils.Log($"{matrix[0, 0]} - {string.Join(" ", row)}", logToConsole, logToFile);
@@ -39,7 +41,72 @@ public class Day11
 
     public void CalculatePaths(string[,] matrix)
     {
-        Utils.Info($"TODO - CalculatePaths", logToConsole, logToFile);
+        var permutations = GetPermutations(1, 9);
+        Utils.Log($"Permutations #({permutations.Count}): {string.Join(" ", permutations)}", logToConsole, logToFile);
+
+        var minPaths = new List<(string galaxyX, string galaxyY, int min)>();
+
+        foreach (var permutation in permutations)
+        {
+            Utils.Log($"{permutation.Item1} - {permutation.Item2}", logToConsole, logToFile);
+            var minPath = CalculateMinPath(matrix, $"{permutation.Item1}", $"{permutation.Item2}");
+            // Utils.Warning($"{minPath}", logToConsole, logToFile);
+            minPaths.Add(minPath);
+        }
+
+        // Utils.Log($"{string.Join(Environment.NewLine, minPaths)}", logToConsole, logToFile);
+        var total = Total(minPaths);
+        Utils.Log($"Total: {total}", logToConsole, logToFile);
+        Utils.Answer($"{total}", true, logToFile);
+    }
+
+    public int Total(List<(string galaxyX, string galaxyY, int min)> minPaths)
+    {
+        var total = 0;
+        foreach (var minPath in minPaths)
+        {
+            total += minPath.Item3;
+        }
+        return total;
+    }
+
+    public (string galaxyX, string galaxyY, int min) CalculateMinPath(string[,] matrix, string galaxyX, string galaxyY)
+    {
+        var galaxyXCoords = Utils.CoordinatesOf(matrix, galaxyX);
+        var galaxyYCoords = Utils.CoordinatesOf(matrix, galaxyY);
+        Utils.Log($"{galaxyX}:{galaxyXCoords} - {galaxyY}:{galaxyYCoords}", logToConsole, logToFile);
+
+        // Dijkstra's algorithm?
+        // A* Path Finding?
+        // BFS - Breadth First Search?
+        Utils.UpdatePosition(matrix, galaxyXCoords.Item1, galaxyXCoords.Item2, "s");
+        Utils.UpdatePosition(matrix, galaxyYCoords.Item1, galaxyYCoords.Item2, "d");
+        var minDistance = GFG.minDistance(matrix);
+        Utils.Log($"minDistance: {minDistance}", logToConsole, logToFile);
+
+        // Reset
+        Utils.UpdatePosition(matrix, galaxyXCoords.Item1, galaxyXCoords.Item2, galaxyX);
+        Utils.UpdatePosition(matrix, galaxyYCoords.Item1, galaxyYCoords.Item2, galaxyY);
+
+        return (galaxyX, galaxyY, minDistance);
+    }
+
+    public HashSet<(int, int)> GetPermutations(int first, int last)
+    {
+        var permutations = new HashSet<(int, int)>();
+        
+        for (var i = 1; i <= last; i++)
+        {
+            for (var j = 1; j < last; j++)
+            {
+                if (i == j+1) continue;
+                if (permutations.Contains((j+1, i))) continue;
+                permutations.Add((i, j+1));
+            }
+            
+        }
+        
+        return permutations;
     }
 
     public void UpdateGalaxyNumbers(ref string[,] matrix)
@@ -49,14 +116,14 @@ public class Day11
         while (!allFound)
         {
             var galaxy = Utils.CoordinatesOf(matrix, "#");
-            Utils.Log($"Galaxy: {galaxy}", logToConsole, logToFile);
-            
+
             if (galaxy.Item1 == -1 && galaxy.Item2 == -1)
             {
                 allFound = true;
                 break;
             }
-            
+
+            Utils.Log($"Galaxy: ({g}) {galaxy}", logToConsole, logToFile);
             Utils.UpdatePosition(matrix, galaxy.Item1, galaxy.Item2, $"{g}");
             g++;
         }
@@ -96,7 +163,7 @@ public class Day11
         
         foreach(var l in lines)
         {
-            Console.WriteLine(l);
+            Utils.Log($"{l}", logToConsole, logToFile);
         }
 
         return lines;
@@ -105,7 +172,6 @@ public class Day11
     public List<int> FindEmptyRows(string[,] matrix)
     {
         var emptyRows = new List<int>();
-
         int rowLength = matrix.GetLength(0);
 
         for (var i = 0; i < rowLength; i++)
@@ -126,7 +192,6 @@ public class Day11
     public List<int> FindEmptyColumns(string[,] matrix)
     {
         var emptyColumns = new List<int>();
-
         int colLength = matrix.GetLength(1);
 
         for (var i = 0; i < colLength; i++)
@@ -156,8 +221,8 @@ Utils.Log("-----------", true, true);
 
 var day11 = new Day11();
 
-string fileName = @"input-sample.txt";
-// string fileName = @"input.txt";
+// string fileName = @"input-sample.txt";
+string fileName = @"input.txt";
 var lines = Utils.GetLines(fileName);
 
 // Part 1

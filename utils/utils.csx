@@ -336,6 +336,24 @@ public static class Utils
         return numbers.Aggregate((S, val) => S * val / gcd(S, val));
     }
 
+    /// <summary>
+    /// Get Permutations
+    /// 
+    /// GetPermutations(Enumerable.Range(1, 9))
+    /// https://codereview.stackexchange.com/a/91874
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="values"></param>
+    /// <returns></returns>
+    public static IEnumerable<T[]> GetPermutations<T>(T[] values)
+    {
+        if (values.Length == 1)
+            return new[] {values};
+
+        return values.SelectMany(v => GetPermutations(values.Except(new[] {v}).ToArray()),
+            (v, p) => new[] {v}.Concat(p).ToArray());
+    }
+
     #region Logging
 
     public static void Log(string message, bool toConsole = false, bool toFile = false)
@@ -357,6 +375,16 @@ public static class Utils
     public static void Info(string message, bool toConsole = false, bool toFile = false)
     {
         Console.BackgroundColor = ConsoleColor.DarkBlue;
+        Console.ForegroundColor = ConsoleColor.White;
+        if (toConsole) Console.WriteLine(message);
+        Console.ResetColor();
+
+        if (toFile) File.AppendAllLines(@"debug.log", new[] { $"INFO: {message}" });
+    }
+
+    public static void Warning(string message, bool toConsole = false, bool toFile = false)
+    {
+        Console.BackgroundColor = ConsoleColor.DarkYellow;
         Console.ForegroundColor = ConsoleColor.White;
         if (toConsole) Console.WriteLine(message);
         Console.ResetColor();
