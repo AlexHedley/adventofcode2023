@@ -9,7 +9,13 @@ public class Day12
 
     public void Part1(string[] lines)
     {
-
+        foreach (var line in lines)
+        {
+            (string springs, List<long> records) condition = line.Split(" ", StringSplitOptions.TrimEntries) switch { 
+                    var c => ((c[0]), c[^1].Split(",", StringSplitOptions.TrimEntries)?.Select(long.Parse)?.ToList()) 
+                };
+            Utils.Log($"{condition.springs} {string.Join(",", condition.records)}", logToConsole, logToFile);
+        }
     }
 
     // public void Part2(string[] lines)
