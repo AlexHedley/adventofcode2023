@@ -55,9 +55,63 @@ public class Day15
         return total;
     }
 
-    // public void Part2(string[] lines)
-    // {
-    // }
+    public void Part2(string[] lines)
+    {
+        foreach (var line in lines)
+        {
+            var items = line.Split(",", StringSplitOptions.TrimEntries).ToList();
+            
+            var boxes = CreateBoxes();
+
+            var boxNumber = 0;
+
+            foreach (var item in items)
+            {
+                Utils.Log($"Item: {item}", logToConsole, logToFile);
+
+                if (item.Contains("="))
+                {
+                    Utils.Log($"+ Item: {item} to box {boxNumber}", logToConsole, logToFile);
+                    // var info = item.Split("=") switch { var n => ( n[0], long.Parse(n[1]) ) };
+                    var lens = item.Replace("=", "");
+                    boxes[boxNumber].Add(lens);
+                }
+                else
+                {
+                    // Contains "-"?
+
+                    var valueToCheck = item.Replace("-", "");
+
+                    var boxesToCheck = boxes.Where(b => b.Value.Count != 0).ToList();
+                    Utils.Log($"boxesToCheck: {boxesToCheck.Count}", logToConsole, logToFile);
+
+                    foreach (var boxToCheck in boxesToCheck)
+                    {
+                        if (boxToCheck.Value.Contains(valueToCheck))
+                        {
+                            Utils.Log($"Found: {valueToCheck} in {boxToCheck.Key}", logToConsole, logToFile);
+                            // TODO: Remove
+                            boxes[boxToCheck.Key].Remove(valueToCheck);
+                        }
+                    }
+                }
+                
+                // boxNumber++;
+            }
+        }
+    }
+
+    public Dictionary<int, List<string>> CreateBoxes()
+    {
+        var boxes = new Dictionary<int, List<string>>();
+        
+        for (var i = 0; i < 256; i++)
+        {
+            boxes[i] = new List<string>();
+        }
+
+        return boxes;
+    }
 }
 
 Utils.Log("-- Day 15 --", true, true);
@@ -65,18 +119,18 @@ Utils.Log("-----------", true, true);
 
 var day15 = new Day15();
 
-// string fileName = @"input-sample.txt";
+string fileName = @"input-sample.txt";
 // string fileName = @"input-sample-1.txt";
-string fileName = @"input.txt";
+// string fileName = @"input.txt";
 var lines = Utils.GetLines(fileName);
 
 // Part 1
-Utils.Log("Part 1", true, true);
-day15.Part1(lines);
+// Utils.Log("Part 1", true, true);
+// day15.Part1(lines);
 
 // Part 2
-// Utils.Log("Part 2", true, true);
-// day15.Part2(lines);
+Utils.Log("Part 2", true, true);
+day15.Part2(lines);
 
 Console.WriteLine("Press any key to exit.");
 System.Console.ReadKey();
