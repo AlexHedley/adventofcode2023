@@ -18,14 +18,14 @@
 ```bash
    |     |                   1 1 1 1 1 1 1 1 1 1 2 2 2 2 2 2
    |     | 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
-12 | 561 | * * * * ° * ° ■ * ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° ° | 13
+13 | 622 | * * * * ° * ° ■ * ° ° ° ° ° * ° ° ° ° ° ° ° ° ° ° | 14
 ```
 
 Key: \* Both | ■ One | ° None |
 
 | Silver ■ | Gold ⭐ |
 | -------- | ------- |
-| 1        | 6       |
+| 2        | 6       |
 
 ## Solutions
 
@@ -43,7 +43,7 @@ Key: \* Both | ■ One | ° None |
 - [Day 12](day12/README.md) *
 - [Day 13](day13/README.md) *
 - [Day 14](day14/README.md) *
-- [Day 15](day15/README.md) *
+- [Day 15](day15/README.md)
   <!-- - [Day 16](day16/README.md) -->
   <!-- - [Day 17](day17/README.md) -->
   <!-- - [Day 18](day18/README.md) -->

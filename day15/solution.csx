@@ -9,7 +9,50 @@ public class Day15
 
     public void Part1(string[] lines)
     {
+        var total = 0;
 
+        foreach (var line in lines)
+        {
+            var items = line.Split(",", StringSplitOptions.TrimEntries).ToList();
+            
+            foreach (var item in items)
+            {
+                var calculation = CalculateItem(item);
+                total += calculation;
+            }
+        }
+
+        Utils.Answer($"{total}", logToConsole, logToFile);
+        
+    }
+
+    public int CalculateItem(string item)
+    {
+        var total = 0;
+
+        Utils.Log($"{item}", logToConsole, logToFile);
+
+        foreach (var character in item.ToCharArray())
+        {
+            // Determine the ASCII code for the current character of the string.
+            // Increase the current value by the ASCII code you just determined.
+            var ascii = (int)character;
+            // Utils.Log($"ascii: {ascii}", logToConsole, logToFile);
+            total += ascii;
+            // Utils.Log($"total: {total}", logToConsole, logToFile);
+
+            // Set the current value to itself multiplied by 17.
+            total *= 17;
+            // Utils.Log($"total: {total} (*17)", logToConsole, logToFile);
+
+            // Set the current value to the remainder of dividing itself by 256.
+            total = total % 256;
+            // Utils.Log($"total: {total} (%256)", logToConsole, logToFile);
+
+            // Utils.Log($"{total}", logToConsole, logToFile);
+        }
+
+        return total;
     }
 
     // public void Part2(string[] lines)
@@ -22,8 +65,9 @@ Utils.Log("-----------", true, true);
 
 var day15 = new Day15();
 
-string fileName = @"input-sample.txt";
-// string fileName = @"input.txt";
+// string fileName = @"input-sample.txt";
+// string fileName = @"input-sample-1.txt";
+string fileName = @"input.txt";
 var lines = Utils.GetLines(fileName);
 
 // Part 1

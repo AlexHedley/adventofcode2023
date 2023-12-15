@@ -20,6 +20,15 @@ public class Day15Tests : IDisposable
 
     public void Dispose() { }
 
+    public void CalculateItem()
+    {
+        var input = "HASH";
+        var expected = 52;
+        var actual = day15.CalculateItem(input);
+
+        actual.Should().Be(expected);
+    }
+
     // public void Success()
     // {
     //     "Ok".Should().Be("Ok");
