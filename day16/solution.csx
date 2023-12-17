@@ -9,7 +9,10 @@ public class Day16
 
     public void Part1(string[] lines)
     {
-
+        var rows = lines.Length;
+        var cols = lines[0].Length;
+        var matrix = Utils.GenerateMatrix<string>(lines, rows, cols);
+        Utils.PrintMatrix(matrix, logToConsole, logToFile);
     }
 
     // public void Part2(string[] lines)
