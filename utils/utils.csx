@@ -354,6 +354,27 @@ public static class Utils
             (v, p) => new[] {v}.Concat(p).ToArray());
     }
 
+    // Day 11
+    // var permutations = GetPermutations(1, 9);
+    // Utils.Log($"Permutations #({permutations.Count}): {string.Join(" ", permutations)}", logToConsole, logToFile);
+    public static HashSet<(int, int)> GetPermutations(int first, int last)
+    {
+        var permutations = new HashSet<(int, int)>();
+        
+        for (var i = 1; i <= last; i++)
+        {
+            for (var j = 1; j < last; j++)
+            {
+                if (i == j+1) continue;
+                if (permutations.Contains((j+1, i))) continue;
+                permutations.Add((i, j+1));
+            }
+            
+        }
+        
+        return permutations;
+    }
+
     #region Logging
 
     public static void Log(string message, bool toConsole = false, bool toFile = false)
