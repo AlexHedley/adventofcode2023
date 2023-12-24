@@ -52,7 +52,7 @@ Key: \* Both | ■ One | ° None |
 - [Day 21](day21/README.md) *
 - [Day 22](day22/README.md) *
 - [Day 23](day23/README.md) *
-  <!-- - [Day 24](day24/README.md) -->
+- [Day 24](day24/README.md) *
   <!-- - [Day 25](day25/README.md) -->
 
 <!-- [![For: Advent Of Code](https://img.shields.io/badge/for-advent_of_code-green.svg)](https://adventofcode.com/) -->
