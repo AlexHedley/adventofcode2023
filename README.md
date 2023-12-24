@@ -53,7 +53,7 @@ Key: \* Both | ■ One | ° None |
 - [Day 22](day22/README.md) *
 - [Day 23](day23/README.md) *
 - [Day 24](day24/README.md) *
-  <!-- - [Day 25](day25/README.md) -->
+- [Day 25](day25/README.md) *
 
 <!-- [![For: Advent Of Code](https://img.shields.io/badge/for-advent_of_code-green.svg)](https://adventofcode.com/) -->
 <!-- [![License: MIT](https://img.shields.io/badge/License-MIT-lightgrey.svg)](https://opensource.org/licenses/MIT)  -->
